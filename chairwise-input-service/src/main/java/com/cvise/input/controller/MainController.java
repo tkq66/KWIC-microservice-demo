@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cvise.input.service.InputService;
 
+import java.nio.file.Path;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,13 +27,13 @@ public class MainController {
     
     @GetMapping(path = "/Input/{id}",
 				produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<String> getById(@PathVariable String id) {
+    public List<String> getInputById(@PathVariable String id) {
     	return this.service.getInputById(id);
     }
     
     @GetMapping(path = "/Input/File/{id}",
     			produces = {MediaType.TEXT_PLAIN_VALUE})
-    public String getLinkToFileOfCorpus(@PathVariable String id, HttpServletRequest request) {
+    public String getLinkToCorpusFile(@PathVariable String id, HttpServletRequest request) {
     	String urlToFile = this.service.saveInputToFileById(id, request);
     	return urlToFile;
     }
@@ -40,24 +41,25 @@ public class MainController {
     @PostMapping(path = "/Input/File",
 				 consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
 				 produces = {MediaType.TEXT_PLAIN_VALUE})
-    public String storeDataFromFile(@RequestBody MultipartFile input, HttpServletRequest request) {
-		String storedDataLink = this.service.saveInput(input, request);
+    public String storeDataFromFile(@RequestBody MultipartFile input) {
+    	Path localFilePath = service.uploadFile(input);
+		String storedDataLink = this.service.saveFileToDatabase(localFilePath);
         return storedDataLink;
     }
     
     @PostMapping(path = "/Input/Text",
 				 consumes = {MediaType.TEXT_PLAIN_VALUE},
 				 produces = {MediaType.TEXT_PLAIN_VALUE})
-    public String storeDataFromText(@RequestBody String input, HttpServletRequest request) {
-		String storedDataLink = this.service.saveInput(input, request);
+    public String storeDataFromText(@RequestBody String input) {
+		String storedDataLink = this.service.saveTextToDatabase(input);
         return storedDataLink;
     }
     
     @PostMapping(path = "/Input/List",
 				 consumes = {MediaType.APPLICATION_JSON_VALUE},
 				 produces = {MediaType.TEXT_PLAIN_VALUE})
-    public String storeDataFromTextList(@RequestBody List<String> input, HttpServletRequest request) {
-		String storedDataLink = this.service.saveInput(input, request);
+    public String storeDataFromTextList(@RequestBody List<String> input) {
+		String storedDataLink = this.service.saveTextListToDatabase(input);
         return storedDataLink;
     }
 }

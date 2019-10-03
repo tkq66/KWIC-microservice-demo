@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -27,7 +28,7 @@ import com.cvise.input.repository.InputRepositoryCustomImpl;
 @Service
 public class InputService {
 	@Value("${user.home}")
-    public String localFilesReferenceDir;
+    private String localFilesReferenceDir;
     @Value("${user.local.static.file.path}")
 	private String staticFilePath;
 	@Value("${user.local.static.file.endpoint}")
@@ -35,23 +36,32 @@ public class InputService {
     
     private InputRepository repository;
     private InputRepositoryCustomImpl customRepository;
-
     public InputService(InputRepository inputRepository,
     					InputRepositoryCustomImpl customInputRepository) {
         this.repository = inputRepository;
        	this.customRepository = customInputRepository;
     }
-       
+    
+    /**Return list of string of Input corpus by id.
+     * 
+     * @param id 
+     * @return List of string of text in the corpus.
+     */
     public List<String> getInputById(String id) {
     	Input input = repository.findById(id).orElseThrow(NotFoundException::new);
     	return input.getCorpus();
     }
     
+    /**Return URL to the static file of corpus content of Input with a certain id.
+     * 
+     * @param id String of Input id to get corpus data from.
+     * @param request HttpServletRequest to construct the base URL from.
+     * @return String of URL to the static file location. 
+     */
     public String saveInputToFileById(String id, HttpServletRequest request) {
     	String baseUrl = getStaticFilesUrlFromRequest(request);
     	List<String> inputCorpus = this.getInputById(id);
     	String fileName = UUID.randomUUID().toString() + ".txt";
-//		String filePath = uploadDir + File.separator + fileName;
 		String filePath = staticFilePath + fileName;
     	Path fileLocation = Paths.get(filePath);
     	try {
@@ -59,43 +69,33 @@ public class InputService {
 	    	return baseUrl + fileName;
     	} catch (Exception e) {
             e.printStackTrace();
-            throw new FileStorageException("Could not prepare file of input id "
-            	+ id 
-            	+ " for download at "
-            	+ fileLocation.getFileName()
+            throw new FileStorageException(
+            	"Could not prepare file of input id " + id 
+            	+ " for download at " + fileLocation.getFileName()
                 + ". Please try again!");
         }
     }
-    
-	public String saveInput(String text, HttpServletRequest request) {
-		String baseUrl = getStaticFilesUrlFromRequest(request);
-		String databaseId = saveTextToDatabase(text);
-		return baseUrl + databaseId; 
-	}
 	
-	public String saveInput(List<String> textList, HttpServletRequest request) {
-		String baseUrl = getStaticFilesUrlFromRequest(request);
-		String databaseId = saveTextListToDatabase(textList);
-		return baseUrl + databaseId; 
-	}
-	
-	public String saveInput(MultipartFile file, HttpServletRequest request) {
-		String baseUrl = getStaticFilesUrlFromRequest(request);
-		Path localFilePath = uploadFile(file);
-		String databaseId = saveFileToDatabase(localFilePath);
-		return baseUrl + databaseId; 
-	}
-	
+	/**Transfer text line by line from a String into the corpus database.
+	 * 
+	 * @param text String to read input from.
+	 * @return String of the element id in the database if transfer is successful.
+	 */
 	public String saveTextToDatabase(String text) {
 		Input newInput = repository.save(new Input(new ArrayList<String>()));
 		String inputId = newInput.getId();
-		String lines[] = text.split("\\r?\\n");
+		List<String> lines = Arrays.asList(text.split("\\r?\\n"));
 		for (String line : lines) {
 			customRepository.pushUniqueCorpusById(inputId, line);
 		}
 		return inputId;
 	}
 	
+	/**Transfer elements from a list into the corpus database.
+	 * 
+	 * @param textList List of String to read input from.
+	 * @return String of the element id in the database if transfer is successful.
+	 */
 	public String saveTextListToDatabase(List<String> textList) {
 		System.out.println(textList);
 		Input newInput = repository.save(new Input(new ArrayList<String>()));
@@ -106,13 +106,17 @@ public class InputService {
 		return inputId;
 	}
 	
+	/**Transfer text file content line by line into the corpus database
+	 * then remove the temp file.
+	 * 
+	 * @param localFilePath Path to temp file to read input from.
+	 * @return String of the element id in the database if transfer is successful.
+	 */
 	public String saveFileToDatabase(Path localFilePath) {
 		try (Stream<String> stream = Files.lines(localFilePath)) {
 			Input newInput = repository.save(new Input(new ArrayList<String>()));
 			String inputId = newInput.getId();
-			stream.forEach((line -> {
-				customRepository.pushUniqueCorpusById(inputId, line);
-			}));
+			stream.forEach((line -> { customRepository.pushUniqueCorpusById(inputId, line); }));
 			Files.deleteIfExists(localFilePath);
 			return inputId;
 		} catch (IOException e) {
@@ -123,6 +127,11 @@ public class InputService {
 		}
 	}
 	
+	/**Uploads file to a default local location.
+	 * 
+	 * @param file MultipartFile object that was passed to the controller.
+	 * @return Path to the local location the file is downloaded to. 
+	 */
 	public Path uploadFile(MultipartFile file) {
 		try {
 			String fileName = UUID.randomUUID().toString() + ".txt";
@@ -140,13 +149,11 @@ public class InputService {
         }
 	}
 	
-	public String getFileStreamUrlFromRequest(HttpServletRequest request) {
-		return String.format("%s://%s:%d/api/v1/Input/Stream/",
-			request.getScheme(),
-			request.getServerName(),
-			request.getServerPort());
-	}
-	
+	/**Generate URL string to the location to static files being hosted.
+	 * 
+	 * @param request HttpServletRequest from the controller to extract info from.
+	 * @return String of URL pointing to static files location.
+	 */
 	public String getStaticFilesUrlFromRequest(HttpServletRequest request) {
 		return String.format("%s://%s:%d%s",
 			request.getScheme(),
