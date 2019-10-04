@@ -1,0 +1,14 @@
+version: "3"
+services:
+  outputapi:
+    build: .
+    expose: 
+      - 8083
+    ports:
+      - 8083:8083
+    restart: always
+    networks:
+      - chairwise-sorting-service_sortingnetwork
+networks:
+  chairwise-sorting-service_sortingnetwork:
+    external: true

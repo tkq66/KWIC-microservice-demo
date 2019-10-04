@@ -31,7 +31,7 @@ public class MainController {
 	}
     
     @GetMapping(path = "/CircularShift/File/{id}",
-			produces = {MediaType.TEXT_PLAIN_VALUE})
+				produces = {MediaType.TEXT_PLAIN_VALUE})
 	public String getLinkToKeywordsFile(@PathVariable String id, HttpServletRequest request) {
 		String urlToFile = this.service.saveKeywordsToFileById(id, request);
 		return urlToFile;
