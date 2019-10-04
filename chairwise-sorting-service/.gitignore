@@ -1,8 +1,19 @@
-.DS_Store
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
 .idea/
-src/.DS_Store
-src/main/.DS_Store
-src/main/java/.DS_Store
-src/main/java/com/.DS_Store
-../../../../../../target/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
 target/
+
+# Local mongodb 
+sortingdb/

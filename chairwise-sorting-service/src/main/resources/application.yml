@@ -1,8 +1,8 @@
-spring:
-  profiles.active: dev
+#spring:
+#  profiles.active: dev
 
----
-spring:
-  profiles: dev
-server.port: 8502
----
+#---
+#spring:
+#  profiles: dev
+#server.port: 8502
+#---

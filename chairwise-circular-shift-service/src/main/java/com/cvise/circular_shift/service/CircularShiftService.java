@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +31,17 @@ import com.cvise.circular_shift.exception.NotFoundException;
 import com.cvise.circular_shift.entity.KeywordsInContext;
 import com.cvise.circular_shift.respository.KeywordsInContextRepository;
 import com.cvise.circular_shift.respository.KeywordsInContextRepositoryCustomImpl;
+import com.cvise.circular_shift.exception.FileStorageException;
 import com.cvise.circular_shift.exception.FileReadException;
 
 @Service
 public class CircularShiftService {
 	@Value("${user.home}")
     private String localFilesReferenceDir;
+    @Value("${user.local.static.file.path}")
+	private String staticFilePath;
+	@Value("${user.local.static.file.endpoint}")
+	private String staticFileEndpoint;
 
 	private KeywordsInContextRepository repository;
 	private KeywordsInContextRepositoryCustomImpl customRepository;
@@ -46,12 +53,36 @@ public class CircularShiftService {
     
     /**Return list of string of keywords in context by id.
      * 
-     * @param id 
+     * @param id String of KeywordsInContext id.
      * @return List of string of keywords in context.
      */
     public List<String> getKeywordsById(String id) {
     	KeywordsInContext keywords = repository.findById(id).orElseThrow(NotFoundException::new);
     	return keywords.getKeywords();
+    }
+    
+    /**Return URL to the static file of keywords in context with a certain id.
+     * 
+     * @param id String of KeywordsInContext id to get keywords data from.
+     * @param request HttpServletRequest to construct the base URL from.
+     * @return String of URL to the static file location. 
+     */
+    public String saveKeywordsToFileById(String id, HttpServletRequest request) {
+    	String baseUrl = getStaticFilesUrlFromRequest(request);
+    	List<String> keywordsList = this.getKeywordsById(id);
+    	String fileName = UUID.randomUUID().toString() + ".txt";
+		String filePath = staticFilePath + fileName;
+    	Path fileLocation = Paths.get(filePath);
+    	try {
+	    	Files.write(fileLocation, keywordsList);
+	    	return baseUrl + fileName;
+    	} catch (Exception e) {
+            e.printStackTrace();
+            throw new FileStorageException(
+            	"Could not prepare file of input id " + id 
+            	+ " for download at " + fileLocation.getFileName()
+                + ". Please try again!");
+        }
     }
     
     /**Perform circular shift on a text to get list of keywords in context.
@@ -207,4 +238,18 @@ public class CircularShiftService {
 	            	+ ". Please try again!");
 		}
     }
+    
+	
+	/**Generate URL string to the location to static files being hosted.
+	 * 
+	 * @param request HttpServletRequest from the controller to extract info from.
+	 * @return String of URL pointing to static files location.
+	 */
+	public String getStaticFilesUrlFromRequest(HttpServletRequest request) {
+		return String.format("%s://%s:%d%s",
+			request.getScheme(),
+			request.getServerName(),
+			request.getServerPort(),
+			staticFileEndpoint);
+	}
 }
