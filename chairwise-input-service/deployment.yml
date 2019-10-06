@@ -20,11 +20,11 @@ spec:
         run: chairwise-input-service
     spec:
       containers:
-        - image: cvise/chairwise-input-service:latest
+        - image: siddsatish95/chairwise-input-service:vfinal
           name: chairwise-input-service
           imagePullPolicy: Always
           ports:
-            - containerPort: 8000
+            - containerPort: 8080
               name: http
               protocol: TCP
       dnsPolicy: ClusterFirst
