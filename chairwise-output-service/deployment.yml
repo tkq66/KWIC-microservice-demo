@@ -1,14 +1,14 @@
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    run: chairwise-input-service
-  name: chairwise-input-service
+    run: chairwise-output-service
+  name: chairwise-output-service
 spec:
   replicas: 2
   selector:
     matchLabels:
-      run: chairwise-input-service
+      run: chairwise-output-service
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -17,11 +17,11 @@ spec:
   template:
     metadata:
       labels:
-        run: chairwise-input-service
+        run: chairwise-output-service
     spec:
       containers:
-        - image: siddsatish95/chairwise-input-service:test
-          name: chairwise-input-service
+        - image: siddsatish95/chairwise-output-service:test
+          name: chairwise-output-service
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
