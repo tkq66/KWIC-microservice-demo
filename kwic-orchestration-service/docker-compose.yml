@@ -1,0 +1,23 @@
+version: "3"
+services:
+  kwicapi:
+    build: .
+    expose: 
+      - 8084
+    ports:
+      - 8084:8084
+    restart: always
+    networks:
+      - chairwise-input-service_inputnetwork
+      - chairwise-circular-shift-service_circularshiftnetwork
+      - chairwise-sorting-service_sortingnetwork
+      - chairwise-output-service_outputnetwork
+networks:
+  chairwise-input-service_inputnetwork:
+    external: true
+  chairwise-circular-shift-service_circularshiftnetwork:
+    external: true
+  chairwise-sorting-service_sortingnetwork:
+    external: true
+  chairwise-output-service_outputnetwork:
+    external: true

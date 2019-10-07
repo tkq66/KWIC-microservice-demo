@@ -9,15 +9,15 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cvise</groupId>
-	<artifactId>chairwise-circular-shift-service</artifactId>
+	<artifactId>kwic-orchestration-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>chairwise-circular-shift-service</name>
-	<description>Perform circular shift over a given data then store the result inside MongoDB.</description>
+	<name>kwic-orchestration-service</name>
+	<description>Orchestrate the KWIC domain.</description>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
-
+	
 	<dependencies>
 		<dependency>
 		    <groupId>io.springfox</groupId>
@@ -29,11 +29,6 @@
 		    <groupId>io.springfox</groupId>
 		    <artifactId>springfox-swagger-ui</artifactId>
 		    <version>2.9.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 		
 		<dependency>

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +42,7 @@ public class MainController {
     @PostMapping(path = "/Input/File",
 				 consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
 				 produces = {MediaType.TEXT_PLAIN_VALUE})
-    public String storeDataFromFile(@RequestBody MultipartFile input) {
+    public String storeDataFromFile(@RequestParam("file") MultipartFile input) {
     	Path localFilePath = service.uploadFile(input);
 		String storedDataLink = this.service.saveFileToDatabase(localFilePath);
         return storedDataLink;

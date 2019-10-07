@@ -1,16 +1,26 @@
 package com.cvise.output.controller;
 
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cvise.output.exception.FileReadException;
+import com.cvise.output.exception.HttpFileTransferFailed;
 import com.cvise.output.service.OutputService;
 
+import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +34,7 @@ public class MainController {
         this.service = service;
     }
 	
-	@GetMapping(path = "/Sorting/CircularShift/File/{id}",
+	@GetMapping(path = "/Output/Sorting/File/{id}",
 				produces = {MediaType.TEXT_PLAIN_VALUE})
 	public String outputFileNameFromDataGenFromApi(
 			@RequestHeader(value="data-file-creator-api") String urlToGetDataFile,
@@ -41,26 +51,8 @@ public class MainController {
 		String fileUrl = service.getStaticFileLocationFromFile(localFilePath, request);
 		return fileUrl;
 	}
-
-	@GetMapping(path = "/Sorting/CircularShift/File/Stream/{id}",
-				produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public FileSystemResource outputFileStreamFromDataGenFromApi(
-			@RequestHeader(value="data-file-creator-api") String urlToGetDataFile,
-			@RequestHeader(value="data-file-creator-api-method") String methodToGetDataFile,
-			@RequestHeader(value="data-file-creator-api-content-type") String contentTypeToGetDataFile,
-			@PathVariable String id) {        
-		String contextualSlash = (urlToGetDataFile.charAt(urlToGetDataFile.length() - 1) == '/')
-									? ""
-									: "/";
-		String apiUrlToGetDataFile = urlToGetDataFile + contextualSlash + id;
-		String localFilePath = service.uploadFileFromApiRequest(apiUrlToGetDataFile,
-										 						methodToGetDataFile,
-										 						contentTypeToGetDataFile);
-		return new FileSystemResource(localFilePath);
-	}
-
 	
-	@GetMapping(path = "/Sorting/CircularShift/Text/{id}",
+	@GetMapping(path = "/Output/Sorting/Text/{id}",
 				produces = {MediaType.TEXT_PLAIN_VALUE})
 	public String outputStringFromDataGenFromApi(
 			@RequestHeader(value="data-file-creator-api") String urlToGetDataFile,
@@ -78,7 +70,7 @@ public class MainController {
 		return output;
 	}
 	
-	@GetMapping(path = "/Sorting/CircularShift/List/{id}",
+	@GetMapping(path = "/Output/Sorting/List/{id}",
 				produces = {MediaType.APPLICATION_JSON_VALUE})
 	public List<String> outputListFromDataGenFromApi(
 			@RequestHeader(value="data-file-creator-api") String urlToGetDataFile,
