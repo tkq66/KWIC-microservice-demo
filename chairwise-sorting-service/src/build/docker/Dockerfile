@@ -6,10 +6,10 @@ RUN mvn dependency:go-offline
 
 # Build the current project
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests --activate-profiles dev-docker
 
 # Host the application
 FROM openjdk:8
 RUN mkdir /opt/files
-COPY --from=build /home/app/target/chairwise-circular-shift-service-0.0.1-SNAPSHOT.jar /usr/local/lib/app.jar
+COPY --from=build /home/app/target/chairwise-sorting-service-0.0.1-SNAPSHOT.jar /usr/local/lib/app.jar
 ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]

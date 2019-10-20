@@ -22,12 +22,9 @@ services:
     restart: always
     networks:
       - chairwise-circular-shift-service_circularshiftnetwork
-      - kwic-choreography-service_rabbitmqnetwork
       - sortingnetwork
 networks:
   sortingnetwork:
     driver: bridge
   chairwise-circular-shift-service_circularshiftnetwork:
-    external: true
-  kwic-choreography-service_rabbitmqnetwork:
     external: true

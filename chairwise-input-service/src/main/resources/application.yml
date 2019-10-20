@@ -6,6 +6,9 @@ user:
 spring:
   profiles:
     active: '@activatedProperties@'
+  servlet:
+    multipart.max-file-size: 5GB
+    multipart.max-request-size: 5GB
     
 ---
 
@@ -13,11 +16,11 @@ spring:
   profiles: dev-docker
   data.mongodb:
     database: test
-    uri: mongodb://sortingdb:30003/test
+    uri: mongodb://inputdb:30001/test
     repositories.enabled: true
     
 server:
-  port: 8082
+  port: 8080
 
 ---
 

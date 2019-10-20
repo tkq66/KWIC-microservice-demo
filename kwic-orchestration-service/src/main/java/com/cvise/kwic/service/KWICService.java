@@ -38,8 +38,16 @@ import reactor.core.publisher.Mono;
 public class KWICService {
 	@Value("${user.home}")
     private String localFilesReferenceDir;
+	@Value("${api.url.base.input}")
+    private String inputApiBaseUrl;
+	@Value("${api.url.base.circular-shift}")
+    private String circularShiftApiBaseUrl;
+	@Value("${api.url.base.sorting}")
+    private String sortingApiBaseUrl;
+	@Value("${api.url.base.output}")
+    private String outputApiBaseUrl;
     
-    public KWICService() {}
+    public KWICService() {}    
     
     /**Returns a String of item id of text content of a file that
      * had been uploaded to the local file system before uploaded
@@ -50,7 +58,7 @@ public class KWICService {
      * @return String of item id stored inside Input service's storage.
      */
     public String uploadFileToInputService(MultipartFile file) {
-    	String inputApi = "http://192.168.99.105:32457/api/v1/Input/File";
+    	String inputApi = inputApiBaseUrl + "api/v1/Input/File";
     	String inputApiMethod = "POST";
     	String inputApiContent = "multipart/form-data";
     	String inpuApiResponseContent = "text/plain";
@@ -86,7 +94,7 @@ public class KWICService {
      * @return String of item id stored inside Input service's storage.
      */
     public String uploadTextToInputService(String text) {
-    	String inputApi = "http://192.168.99.105:32457/api/v1/Input/Text";
+    	String inputApi = inputApiBaseUrl + "api/v1/Input/Text";
     	String inputApiMethod = "POST";
     	String inputApiContent = "text/plain";
     	String inpuApiResponseContent = "text/plain";
@@ -109,7 +117,7 @@ public class KWICService {
      * @return String of item id stored inside Input service's storage.
      */
     public String uploadListToInputService(List<String> listInput) {
-    	String inputApi = "http://192.168.99.105:32457/api/v1/Input/List";
+    	String inputApi = inputApiBaseUrl + "api/v1/Input/Text";
     	String inputApiMethod = "POST";
     	String inputApiContent = "application/json";
     	String inpuApiResponseContent = "text/plain";
@@ -133,10 +141,10 @@ public class KWICService {
      * @return String of circular shifted text for all keywords.
      */
     public String performCircularShiftByInputId(String inputId) {
-    	String circularShiftApi = "http://192.168.99.105:31430/api/v1/CircularShift/Input/File/" + inputId;
+    	String circularShiftApi = circularShiftApiBaseUrl + "api/v1/CircularShift/Input/File/" + inputId;
     	String circularShiftApiMethod = "POST";
     	String[][] circularShiftHeaders = new String[][] {
-    		{ "data-file-creator-api", "http://192.168.99.105:32457/api/v1/Input/File/" },
+    		{ "data-file-creator-api", inputApiBaseUrl + "api/v1/Input/File/" },
 			{ "data-file-creator-api-content-type", "text/plain" },
 			{ "data-file-creator-api-method", "GET" }
     	};
@@ -158,10 +166,10 @@ public class KWICService {
      * @return String of sorted keywords.
      */
     public String performSortingByKeywordsId(String keywordsId) {
-    	String sortingApi = "http://192.168.99.105:31942/api/v1/Sorting/CircularShift/File/" + keywordsId;
+    	String sortingApi = sortingApiBaseUrl + "api/v1/Sorting/CircularShift/File/" + keywordsId;
   	  	String sortingApiMethod = "POST";
   	  	String[][] sortingHeaders = new String[][] {
-  	  		{ "data-file-creator-api", "http://192.168.99.105:31430/api/v1/CircularShift/File/" },
+  	  		{ "data-file-creator-api", circularShiftApiBaseUrl + "api/v1/CircularShift/File/" },
   	  		{ "data-file-creator-api-content-type", "text/plain" },
   	  		{ "data-file-creator-api-method", "GET" }
   	  	};
@@ -183,10 +191,10 @@ public class KWICService {
      * @return String of keywords in context.
      */
     public String getOutputTextBySortedKeywordsId(String sortedKeywordsId) {
-    	String outputApi = "http://192.168.99.105:31757/api/v1/Output/Sorting/Text/" + sortedKeywordsId;
+    	String outputApi = outputApiBaseUrl + "api/v1/Output/Sorting/Text/" + sortedKeywordsId;
 	  	String outputApiMethod = "GET";
 	  	String[][] outputHeaders = new String[][] {
-	  		{ "data-file-creator-api", "http://192.168.99.105:31942/api/v1/Sorting/File/" },
+	  		{ "data-file-creator-api", sortingApiBaseUrl + "api/v1/Sorting/File/" },
 			{ "data-file-creator-api-content-type", "text/plain" },
 			{ "data-file-creator-api-method", "GET" }
 	  	};
@@ -208,10 +216,10 @@ public class KWICService {
     * @return List of String of keywords in context.
     */
    public List<String> getOutputLisBySortedKeywordsId(String sortedKeywordsId) {
-   	String outputApi = "http://192.168.99.105:31757/api/v1/Output/Sorting/Text/" + sortedKeywordsId;
+   	String outputApi = outputApiBaseUrl + "api/v1/Output/Sorting/Text/" + sortedKeywordsId;
 	  	String outputApiMethod = "GET";
 	  	String[][] outputHeaders = new String[][] {
-	  		{ "data-file-creator-api", "http://192.168.99.105:31942/api/v1/Sorting/File/" },
+	  		{ "data-file-creator-api", sortingApiBaseUrl + "api/v1/Sorting/File/" },
 			{ "data-file-creator-api-content-type", "text/plain" },
 			{ "data-file-creator-api-method", "GET" }
 	  	};
@@ -235,10 +243,10 @@ public class KWICService {
      * @return Path of local keywords in context file.
      */
     public Path getLocalCopyOfOutputFile(String sortedKeywordsId) {
-    	String outputApi = "http://192.168.99.105:31757/api/v1/Output/Sorting/File/" + sortedKeywordsId;
+    	String outputApi = outputApiBaseUrl + "api/v1/Output/Sorting/File/" + sortedKeywordsId;
 	  	String outputApiMethod = "GET";
 	  	String[][] outputHeaders = new String[][] {
-	  		{ "data-file-creator-api", "http://192.168.99.105:31942/api/v1/Sorting/File/" },
+	  		{ "data-file-creator-api", sortingApiBaseUrl + "api/v1/Sorting/File/" },
 			{ "data-file-creator-api-content-type", "text/plain" },
 			{ "data-file-creator-api-method", "GET" }
 	  	};

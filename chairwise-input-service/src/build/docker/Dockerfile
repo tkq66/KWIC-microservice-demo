@@ -6,7 +6,7 @@ RUN mvn dependency:go-offline
 
 # Build the current project
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests --activate-profiles dev-docker
 
 # Host the application
 FROM openjdk:8
