@@ -28,4 +28,13 @@ Image of each service is build with multi-stage build and dependency caching to 
 
 For convenience, *build-with-docker.sh* script is provided in the root folder to automatically deploy each service in a different gnome terminal, so you don't have to run the build script for each folder manually.
 
+#### Swagger
+For convenience in testing the API for each services, Swagger 2 is incoporated into the project. Once the services are running, a Swagger UI is avaialable for each service for testing. For Docker Compose deployment here are the links to all the Swagger UI for each services:
+
+1. **localhost:8084/swagger-ui.html** - kwic-orchestration-service
+2. **localhost:8080/swagger-ui.html** - chariwise-input-service
+3. **localhost:8081/swagger-ui.html** - chariwise-circular-shift-service
+4. **localhost:8082/swagger-ui.html** - chariwise-sorting-service
+5. **localhost:8083/swagger-ui.html** - chariwise-output-service
+
 ### Kubernetes
