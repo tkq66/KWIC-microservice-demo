@@ -11,6 +11,7 @@ There are 5 services:
 5. **chariwise-output-service** - Prepares and sends out different forms of ouput for the results. Outputs are provided in the form of: file download stream, file location string to be downloaded by the client, raw text, and JSON lis. Data is provided by *chairwise-sorting-service*, with data transfer scheme as described in the point above.
 
 ## Requirements
+* Ubuntu or other Debiand OS
 * Java 8
 * Maven
 * Docker
@@ -24,5 +25,7 @@ This architecture can be deployed with either Docker Compose or Kubernetes. All 
 
 ### Docker Compose
 Image of each service is build with multi-stage build and dependency caching to optimize build speed. A **bridge** network is explicitly defined for all services so that a service may be discoverable by all services that depend on it. The orchestration service have the longest list of networks, for example, because it needs to connect with all other services.
+
+For convenience, *build-with-docker.sh* script is provided in the root folder to automatically deploy each service in a different gnome terminal, so you don't have to run the build script for each folder manually.
 
 ### Kubernetes
