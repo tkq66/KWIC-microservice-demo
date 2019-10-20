@@ -1,7 +1,15 @@
-FROM ubuntu
+# Cache dependencies
+FROM maven:3.6.2-jdk-8 as build
+WORKDIR /home/app
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-RUN apt-get update
-RUN apt-get install -y openjdk-8-jre-headless
+# Build the current project
+COPY src ./src
+RUN mvn package -DskipTests
 
-COPY target/chairwise-output-service-0.0.1-SNAPSHOT.jar /home/app.jar
-ENTRYPOINT ["java","-jar","/home/app.jar"]
+# Host the application
+FROM openjdk:8
+RUN mkdir /opt/files
+COPY --from=build /home/app/target/chairwise-output-service-0.0.1-SNAPSHOT.jar /usr/local/lib/app.jar
+ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
