@@ -11,22 +11,14 @@ spring:
 
 spring:
   profiles: dev-docker
-  data.mongodb:
-    database: test
-    uri: mongodb://sortingdb:30003/test
-    repositories.enabled: true
     
 server:
-  port: 8082
+  port: 8083
 
 ---
 
 spring:
   profiles: dev-kubernetes
-  data.mongodb:
-    database: test
-    uri: mongodb://192.168.99.105:31851/test
-    repositories.enabled: true
 
 server:
   port: 8080

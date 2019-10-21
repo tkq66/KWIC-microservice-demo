@@ -6,18 +6,18 @@ user:
 spring:
   profiles:
     active: '@activatedProperties@'
-    
+
 ---
 
 spring:
   profiles: dev-docker
   data.mongodb:
     database: test
-    uri: mongodb://sortingdb:30003/test
+    uri: mongodb://circularshiftdb:30002/test
     repositories.enabled: true
     
 server:
-  port: 8082
+  port: 8081
 
 ---
 
@@ -30,4 +30,3 @@ spring:
 
 server:
   port: 8080
-  
