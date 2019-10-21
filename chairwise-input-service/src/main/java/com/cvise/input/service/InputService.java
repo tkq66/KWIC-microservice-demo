@@ -33,7 +33,7 @@ public class InputService {
 	private String staticFilePath;
 	@Value("${user.local.static.file.endpoint}")
 	private String staticFileEndpoint;
-    
+
     private InputRepository repository;
     private InputRepositoryCustomImpl customRepository;
     public InputService(InputRepository inputRepository,

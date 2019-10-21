@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import com.cvise.input.entity.Input;
 
 public class InputRepositoryCustomImpl implements InputRepositoryCustom {
-	
+
 	@Autowired
     protected MongoTemplate mongoTemplate;
 	

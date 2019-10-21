@@ -5,7 +5,7 @@ metadata:
     run: chairwise-output-service
   name: chairwise-output-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       run: chairwise-output-service
@@ -20,7 +20,7 @@ spec:
         run: chairwise-output-service
     spec:
       containers:
-        - image: siddsatish95/chairwise-output-service:test
+        - image: siddsatish95/chairwise-output-service:final
           name: chairwise-output-service
           imagePullPolicy: Always
           ports:

@@ -5,7 +5,7 @@ metadata:
     run: chairwise-input-service
   name: chairwise-input-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       run: chairwise-input-service
@@ -20,7 +20,7 @@ spec:
         run: chairwise-input-service
     spec:
       containers:
-        - image: siddsatish95/chairwise-input-service:test
+        - image: siddsatish95/chairwise-input-service:final
           name: chairwise-input-service
           imagePullPolicy: Always
           ports:

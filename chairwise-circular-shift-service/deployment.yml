@@ -5,7 +5,7 @@ metadata:
     run: chairwise-cshift-service
   name: chairwise-cshift-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       run: chairwise-cshift-service
@@ -20,7 +20,7 @@ spec:
         run: chairwise-cshift-service
     spec:
       containers:
-        - image: siddsatish95/chairwise-cshift-service:test
+        - image: siddsatish95/chairwise-cshift-service:final
           name: chairwise-cshift-service
           imagePullPolicy: Always
           ports:

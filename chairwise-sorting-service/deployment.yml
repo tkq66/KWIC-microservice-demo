@@ -5,7 +5,7 @@ metadata:
     run: chairwise-sorting-service
   name: chairwise-sorting-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       run: chairwise-sorting-service
@@ -20,7 +20,7 @@ spec:
         run: chairwise-sorting-service
     spec:
       containers:
-        - image: siddsatish95/chairwise-sorting-service:test
+        - image: siddsatish95/chairwise-sorting-service:final
           name: chairwise-sorting-service
           imagePullPolicy: Always
           ports:
