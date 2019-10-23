@@ -25,9 +25,9 @@ spring:
   profiles: dev-kubernetes
   data.mongodb:
     database: test
-    uri: mongodb://192.168.99.105:31851/test
+    uri: mongodb://192.168.99.113:30955/test
     repositories.enabled: true
 
 server:
-  port: 8080
+  port: 8082
   

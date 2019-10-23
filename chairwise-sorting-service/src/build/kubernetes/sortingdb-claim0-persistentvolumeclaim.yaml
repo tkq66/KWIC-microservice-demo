@@ -3,12 +3,12 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: inputdb-claim0
-  name: inputdb-claim0
+    io.kompose.service: sortingdb-claim0
+  name: sortingdb-claim0
 spec:
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 50Mi
 status: {}

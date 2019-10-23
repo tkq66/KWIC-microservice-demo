@@ -21,7 +21,7 @@ spec:
         io.kompose.service: inputapi
     spec:
       containers:
-      - image: inputapi
+      - image: siddsatish95/chairwise-input-service:msg
         name: inputapi
         ports:
         - containerPort: 8080
